@@ -31,6 +31,7 @@ export const Button1 = styled(Button)`
 `;
 
 export const HeaderButton = styled(Button1)`
+  margin-right: 8px;
   width: 224px;
   height: 40px;
   border: 1px solid #ffffff;

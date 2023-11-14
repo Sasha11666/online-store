@@ -2,6 +2,7 @@ import * as S from "./styles";
 import { Header } from "../../components/header/Header";
 import { Link } from "react-router-dom";
 import { CardItem } from "../../components/card-item/CardItem";
+import { Footer } from "../../components/footer/Footer";
 
 export const MainPage = () => {
   const cards = [
@@ -74,14 +75,10 @@ export const MainPage = () => {
         <S.Main>
           <S.MainSearch>
             <S.SearchLogoLink>
-              <S.SearchLogoImg>
-                <use xlinkHref="/img/logo.png"></use>
-              </S.SearchLogoImg>
+              <S.SearchLogoImg src="/img/logo.png"></S.SearchLogoImg>
             </S.SearchLogoLink>
             <S.SearchLogoMobLink>
-              <S.SearchLogoMobImg>
-                <use xlinkHref="/img/logo-mob.png"></use>
-              </S.SearchLogoMobImg>
+              <S.SearchLogoMobImg src="/img/logo-mob.png"></S.SearchLogoMobImg>
             </S.SearchLogoMobLink>
             <S.SearchForm>
               <S.SearchText
@@ -113,26 +110,7 @@ export const MainPage = () => {
             </S.MainContent>
           </S.MainContainer>
         </S.Main>
-
-        <footer class="footer">
-          <div class="footer__container">
-            <div class="footer__img">
-              <a href="" target="_self">
-                <img src="img/icon_01.png" alt="home" />
-              </a>
-            </div>
-            <div class="footer__img">
-              <a href="" target="_self">
-                <img src="img/icon_02.png" alt="home" />
-              </a>
-            </div>
-            <div class="footer__img">
-              <a href="" target="_self">
-                <img src="img/icon_03.png" alt="home" />
-              </a>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </S.Container>
     </S.Wrapper>
   );

@@ -240,35 +240,33 @@ export const MainContent = styled.div`
     width: 100%;
     margin: 0 auto;
     overflow: hidden;
-    position: fixed;
+    // position: fixed;
     right: 0;
     left: 0;
     top: 134px;
-    bottom: 84px;
+    // bottom: 84px;
   }
 `;
 
 export const Cards = styled.div`
-  max-width: 1158px;
+  // max-width: 1158px;
   width: 100%;
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: repeat(4, 270px);
+  -ms-grid-columns: (270px) [4];
   grid-template-columns: repeat(4, 270px);
   grid-auto-rows: 441px;
   grid-gap: 40px 26px;
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
-  overflow-y: auto;
   scrollbar-color: #ffffff #2e2e2e;
   scrollbar-width: thin;
   scrollbar-width: 0px;
-  height: 922px;
   @media screen and (max-width: 1158px) {
     display: -ms-grid;
     display: grid;
-    -ms-grid-columns: repeat(3, 270px);
+    -ms-grid-columns: (270px) [3];
     grid-template-columns: repeat(3, 270px);
   }
   @media screen and (max-width: 890px) {

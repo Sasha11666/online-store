@@ -29,6 +29,7 @@ export const Card = styled.div`
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
+    width: 100%;
   }
 `;
 
@@ -68,7 +69,11 @@ export const CardImageImg = styled.img`
   }
 `;
 
-export const CardContent = styled.div``;
+export const CardContent = styled.div`
+  @media screen and (max-width: 590px) {
+    padding-left: 8px;
+  }
+`;
 
 export const CardLink = styled.a``;
 
@@ -89,6 +94,8 @@ export const CardTitle = styled.h3`
     color: #009ee4;
     margin-bottom: 10px;
     margin-top: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 export const CardPrice = styled.p`
