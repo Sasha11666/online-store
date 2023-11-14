@@ -1,3 +1,10 @@
+import * as S from "./styles";
+import Auth from "../../components/auth/Auth";
+
 export const RegisterPage = () => {
-  return <div>Register Page</div>;
+  return (
+    <S.PageWrapper>
+      <Auth isLoginMode={false} />
+    </S.PageWrapper>
+  );
 };
