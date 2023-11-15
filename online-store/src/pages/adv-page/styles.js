@@ -285,14 +285,12 @@ export const ArticleFillImg = styled.div`
 
 export const ArticleImg = styled.div`
   width: 480px;
-  height: 480px;
+  height: ${(props) => (props.ad ? "auto" : "480px")};
   background-color: #f0f0f0;
   margin: 0 5px;
   @media screen and (max-width: 768px) {
-    width: 100%;
-    min-width: 320px;
-    height: auto;
-    min-height: 320px;
+    width: 240px;
+    height: ${(props) => (props.ad ? "auto" : "100px")};
     margin: 0 0px;
   }
 `;
@@ -330,7 +328,7 @@ export const ArticleImgBar = styled.div`
 export const ImgItem = styled.div`
   width: 88px;
   min-width: 88px;
-  height: 88px;
+  height: ${(props) => (props.ad ? "auto" : "88px")};
   background-color: #f0f0f0;
   border: 2px solid #f0f0f0;
   margin: 0 5px;

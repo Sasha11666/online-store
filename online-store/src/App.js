@@ -3,6 +3,8 @@ import "./App.css";
 import { AppRoutes } from "./routes/routes";
 import { createGlobalStyle } from "styled-components";
 import { getAds } from "./api.js";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentAds } from "./store/currentAds";
 
 const GlobalStyle = createGlobalStyle`
 * {
@@ -31,6 +33,10 @@ body {
   color: #000000;
 }
 
+a {
+  text-decoration: none;
+}
+
 @font-face {
   font-family: "StratosSkyeng";
   src: local("StratosSkyeng"), url(./fonts/StratosSkyeng.woff) format(truetype);
@@ -53,11 +59,14 @@ body {
 }`;
 
 function App() {
-  // useEffect(() => {
-  //   getAds().then((ads) => {
-  //     console.log(ads);
-  //   });
-  // }, []);
+  const dispatch = useDispatch();
+  const ads = useSelector((state) => state.currentAds.value);
+
+  useEffect(() => {
+    getAds().then((ads) => {
+      dispatch(setCurrentAds(ads));
+    });
+  }, []);
   return (
     <div className="App">
       <GlobalStyle />

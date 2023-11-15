@@ -1,10 +1,25 @@
 import * as S from "./styles";
 import { Header } from "../../components/header/Header";
 import { Footer } from "../../components/footer/Footer";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getAd } from "../../api";
 
 export const AdvPage = () => {
   const images = ["", "", "", "", ""];
+  const { id } = useParams();
+  const [ad, setAd] = useState({});
+  const [adIsFull, setAdIsFull] = useState(false);
+
+  useEffect(() => {
+    setAdIsFull(Object.keys(ad).length > 0);
+  }, [ad]);
+
+  useEffect(() => {
+    getAd(id).then((data) => {
+      setAd(data);
+    });
+  }, []);
 
   return (
     <S.Wrapper>
@@ -18,7 +33,7 @@ export const AdvPage = () => {
             <S.SearchLogoMobLink>
               <S.SearchLogoMobImg src="/img/logo-mob.png"></S.SearchLogoMobImg>
             </S.SearchLogoMobLink>
-            <Link>
+            <Link to={"/"}>
               <S.SearchButton>Вернуться на главную</S.SearchButton>
             </Link>
           </S.MainSearch>
@@ -26,34 +41,47 @@ export const AdvPage = () => {
             <S.ArticContent>
               <S.ArticleLeft>
                 <S.ArticleFillImg>
-                  <S.ArticleImg>
-                    <S.ArticleImgImage src=""></S.ArticleImgImage>
+                  <S.ArticleImg ad={adIsFull}>
+                    {ad?.images?.length > 0 ? (
+                      <S.ArticleImgImage
+                        src={"http://127.0.0.1:8090/" + ad?.images[0].url}
+                      ></S.ArticleImgImage>
+                    ) : (
+                      <S.ArticleImgImage src=""></S.ArticleImgImage>
+                    )}
                   </S.ArticleImg>
+
                   <S.ArticleImgBar>
-                    {images.map((item) => (
-                      <S.ImgItem>
-                        <S.ImgItemImage src={item}></S.ImgItemImage>
-                      </S.ImgItem>
-                    ))}
+                    {adIsFull
+                      ? ad.images?.map((item) => (
+                          <S.ImgItem ad={adIsFull}>
+                            <S.ImgItemImage
+                              src={"http://127.0.0.1:8090/" + item.url}
+                            ></S.ImgItemImage>
+                          </S.ImgItem>
+                        ))
+                      : images.map((item) => (
+                          <S.ImgItem ad={adIsFull}>
+                            <S.ImgItemImage src=""></S.ImgItemImage>
+                          </S.ImgItem>
+                        ))}
                   </S.ArticleImgBar>
                   <S.ArticleImgBarMob>
-                    {images.map((item) => (
-                      <S.ImgItemMob></S.ImgItemMob>
-                    ))}
+                    {adIsFull
+                      ? ad.images?.map((item) => <S.ImgItemMob></S.ImgItemMob>)
+                      : images.map((item) => <S.ImgItemMob></S.ImgItemMob>)}
                   </S.ArticleImgBarMob>
                 </S.ArticleFillImg>
               </S.ArticleLeft>
               <S.ArticleRight>
                 <S.ArticleBlock>
-                  <S.ArticleTitle>
-                    Ракетка для большого тенниса Triumph Pro STС Б/У
-                  </S.ArticleTitle>
+                  <S.ArticleTitle>{ad?.title}</S.ArticleTitle>
                   <S.ArticleInfo>
-                    <S.ArticleDate>Сегодня в 10:45</S.ArticleDate>
-                    <S.ArticleCity>Санкт-Петербург</S.ArticleCity>
+                    <S.ArticleDate>{ad?.created_on}</S.ArticleDate>
+                    <S.ArticleCity>{ad?.city}</S.ArticleCity>
                     <S.ArticleLink>23 отзыва</S.ArticleLink>
                   </S.ArticleInfo>
-                  <S.ArticlePrice>2 200 ₽</S.ArticlePrice>
+                  <S.ArticlePrice>{ad?.price} ₽</S.ArticlePrice>
                   <S.ArticleBtn>
                     Показать&nbsp;телефон
                     <S.ArticleBtnSpan>
