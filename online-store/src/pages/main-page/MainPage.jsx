@@ -12,64 +12,28 @@ export const MainPage = () => {
   const [filter, setFilter] = useState("");
   const cards = [
     {
-      title: "Ракетка для большого тенниса Triumph Pro ST",
-      price: "2 200",
-      place: "Санкт Петербург",
-      date: "10:45",
+      title: "",
+      price: "",
+      place: "",
+      date: "",
     },
     {
-      title: "Ракетка для большого тенниса Triumph Pro ST",
-      price: "2 200",
-      place: "Санкт Петербург",
-      date: "10:45",
+      title: "",
+      price: "",
+      place: "",
+      date: "",
     },
     {
-      title: "Ракетка для большого тенниса Triumph Pro ST",
-      price: "2 200",
-      place: "Санкт Петербург",
-      date: "10:45",
+      title: "",
+      price: "",
+      place: "",
+      date: "",
     },
     {
-      title: "Ракетка для большого тенниса Triumph Pro ST",
-      price: "2 200",
-      place: "Санкт Петербург",
-      date: "10:45",
-    },
-    {
-      title: "Ракетка для большого тенниса Triumph Pro ST",
-      price: "2 200",
-      place: "Санкт Петербург",
-      date: "10:45",
-    },
-    {
-      title: "Ракетка для большого тенниса Triumph Pro ST",
-      price: "2 200",
-      place: "Санкт Петербург",
-      date: "10:45",
-    },
-    {
-      title: "Ракетка для большого тенниса Triumph Pro ST",
-      price: "2 200",
-      place: "Санкт Петербург",
-      date: "10:45",
-    },
-    {
-      title: "Ракетка для большого тенниса Triumph Pro ST",
-      price: "2 200",
-      place: "Санкт Петербург",
-      date: "10:45",
-    },
-    {
-      title: "Ракетка для большого тенниса Triumph Pro ST",
-      price: "2 200",
-      place: "Санкт Петербург",
-      date: "10:45",
-    },
-    {
-      title: "Ракетка для большого тенниса Triumph Pro ST",
-      price: "2 200",
-      place: "Санкт Петербург",
-      date: "10:45",
+      title: "",
+      price: "",
+      place: "",
+      date: "",
     },
   ];
 
@@ -90,9 +54,11 @@ export const MainPage = () => {
         <Header />
         <S.Main>
           <S.MainSearch>
-            <S.SearchLogoLink>
-              <S.SearchLogoImg src="/img/logo.png"></S.SearchLogoImg>
-            </S.SearchLogoLink>
+            <Link to={"/"}>
+              <S.SearchLogoLink>
+                <S.SearchLogoImg src="/img/logo.png"></S.SearchLogoImg>
+              </S.SearchLogoLink>
+            </Link>
             <S.SearchLogoMobLink>
               <S.SearchLogoMobImg src="/img/logo-mob.png"></S.SearchLogoMobImg>
             </S.SearchLogoMobLink>

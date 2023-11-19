@@ -285,7 +285,7 @@ export const ArticleFillImg = styled.div`
 
 export const ArticleImg = styled.div`
   width: 480px;
-  height: ${(props) => (props.ad ? "auto" : "480px")};
+  height: ${(props) => (props.ad ? "auto" : "280px")};
   background-color: #f0f0f0;
   margin: 0 5px;
   @media screen and (max-width: 768px) {
