@@ -2,8 +2,11 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import * as S from "./styles.js";
 import { useEffect, useState } from "react";
+import { registerUser, loginUser, getUser } from "../../api.js";
+import { useUserContext } from "../../App";
 
 export default function Auth({ isLoginMode = false }) {
+  const { setUser } = useUserContext();
   const [error, setError] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,16 +15,48 @@ export default function Auth({ isLoginMode = false }) {
   const [surname, setSurname] = useState("");
   const [city, setCity] = useState("");
   const [disable, setDisable] = useState(false);
+  const [phone, setPhone] = useState("");
   let navigate = useNavigate();
 
-  const loginUser = (email, password) => {
+  const handleLoginUser = (email, password) => {
     if (!email || !password) {
       setError("Заполните все поля");
       return;
     }
+
+    setDisable(true);
+    loginUser(email, password)
+      .then((data) => {
+        localStorage.setItem("accessToken", JSON.stringify(data.access_token));
+        localStorage.setItem(
+          "refreshToken",
+          JSON.stringify(data.refresh_token)
+        );
+        getUser(data.access_token).then((data) => {
+          setUser(data);
+          localStorage.setItem("user", JSON.stringify(data));
+          console.log(data);
+          navigate("/");
+        });
+      })
+      .catch((err) => {
+        setError(err.message);
+      })
+      .finally(() => {
+        setDisable(false);
+      });
   };
 
-  const registerUser = (email, password, repeatPassword) => {
+  const handleRegisterUser = (
+    email,
+    password,
+    repeatPassword,
+    name,
+    surname,
+    city,
+    phone
+  ) => {
+    console.log(phone);
     if (!email || !password || !repeatPassword) {
       setError("Заполните все поля");
       return;
@@ -30,6 +65,18 @@ export default function Auth({ isLoginMode = false }) {
       setError("Пароли не совпадают");
       return;
     }
+    setDisable(true);
+    registerUser(email, password, name, surname, city, phone)
+      .then((data) => {
+        console.log(data);
+        navigate("/login");
+      })
+      .catch((err) => {
+        setError(err.message);
+      })
+      .finally(() => {
+        setDisable(false);
+      });
   };
 
   useEffect(() => {
@@ -71,7 +118,9 @@ export default function Auth({ isLoginMode = false }) {
               {disable ? (
                 <p style={{ color: "#000" }}>Выполняется вход...</p>
               ) : (
-                <S.PrimaryButton onClick={() => loginUser(email, password)}>
+                <S.PrimaryButton
+                  onClick={() => handleLoginUser(email, password)}
+                >
                   Войти
                 </S.PrimaryButton>
               )}
@@ -138,6 +187,15 @@ export default function Auth({ isLoginMode = false }) {
                   setCity(event.target.value);
                 }}
               />
+              <S.ModalInput
+                type="text"
+                name="phone"
+                placeholder="Телефон (необязательно)"
+                value={phone}
+                onChange={(event) => {
+                  setPhone(event.target.value);
+                }}
+              />
             </S.Inputs>
             {error && <S.Error>{error}</S.Error>}
             <S.Buttons>
@@ -145,7 +203,17 @@ export default function Auth({ isLoginMode = false }) {
                 <p style={{ color: "#000" }}>Регистрируем пользователя...</p>
               ) : (
                 <S.PrimaryButton
-                  onClick={() => registerUser(email, password, repeatPassword)}
+                  onClick={() =>
+                    handleRegisterUser(
+                      email,
+                      password,
+                      repeatPassword,
+                      name,
+                      surname,
+                      city,
+                      phone
+                    )
+                  }
                 >
                   Зарегистрироваться
                 </S.PrimaryButton>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, createContext, useContext, useState } from "react";
 import "./App.css";
 import { AppRoutes } from "./routes/routes";
 import { createGlobalStyle } from "styled-components";
@@ -54,23 +54,32 @@ a {
   src: local("RobotoMedium"), url(./fonts/Roboto-Medium.ttf) format(truetype);
   font-weight: 500;
 }
-
-
 }`;
+
+export const UserContext = createContext("");
+
+export const useUserContext = () => {
+  const user = useContext(UserContext);
+  return user;
+};
 
 function App() {
   const dispatch = useDispatch();
   const ads = useSelector((state) => state.currentAds.value);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
 
   useEffect(() => {
     getAds().then((ads) => {
       dispatch(setCurrentAds(ads));
     });
+    setUser(JSON.parse(localStorage.getItem("user")));
   }, []);
   return (
     <div className="App">
       <GlobalStyle />
-      <AppRoutes />
+      <UserContext.Provider value={{ user: user, setUser }}>
+        <AppRoutes />
+      </UserContext.Provider>
     </div>
   );
 }
