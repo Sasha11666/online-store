@@ -55,9 +55,11 @@ export const CardImageLink = styled.a`
 export const CardImageImg = styled.img`
   width: 100%;
   height: 100%;
+  height: ${(props) => (props.adIs ? "100%" : "0%")};
   display: block;
   -o-object-fit: cover;
   object-fit: cover;
+
   @media screen and (max-width: 590px) {
     width: 100%;
     height: 100%;
@@ -78,7 +80,8 @@ export const CardContent = styled.div`
 export const CardLink = styled.a``;
 
 export const CardTitle = styled.h3`
-  height: 52px;
+  height: 30px;
+  width: ${(props) => (props.adIs ? "" : "200px")};
   font-size: 22px;
   font-weight: 500;
   line-height: 26px;
@@ -87,6 +90,7 @@ export const CardTitle = styled.h3`
   margin-top: 20px;
   overflow: hidden;
   text-overflow: ellipsis;
+  background-color: ${(props) => (props.adIs ? "" : "#f0f0f0")};
   @media screen and (max-width: 590px) {
     height: 51px;
     font-size: 14px;
@@ -104,6 +108,7 @@ export const CardPrice = styled.p`
   font-weight: 500;
   line-height: 33px;
   margin-bottom: 10px;
+  display: ${(props) => (props.adIs ? "block" : "none")};
   @media screen and (max-width: 590px) {
     font-size: 16px;
     line-height: 24px;
@@ -113,8 +118,11 @@ export const CardPrice = styled.p`
 export const CardPlace = styled.p`
   font-size: 16px;
   line-height: 21px;
+  height: 30px;
+  width: ${(props) => (props.adIs ? "" : "135px")};
   color: #5f5f5f;
-  margin-bottom: 4px;
+  margin-bottom: ${(props) => (props.adIs ? "4px" : "10px")};
+  background-color: ${(props) => (props.adIs ? "" : "#f0f0f0")};
   @media screen and (max-width: 590px) {
     font-size: 12px;
     line-height: 16px;
@@ -124,7 +132,10 @@ export const CardPlace = styled.p`
 export const CardDate = styled.p`
   font-size: 16px;
   line-height: 21px;
+  height: 30px;
+  width: ${(props) => (props.adIs ? "" : "135px")};
   color: #5f5f5f;
+  background-color: ${(props) => (props.adIs ? "" : "#f0f0f0")};
   @media screen and (max-width: 590px) {
     font-size: 12px;
     line-height: 16px;

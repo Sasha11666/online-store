@@ -1,10 +1,55 @@
 import * as S from "./styles";
 import { Header } from "../../components/header/Header";
 import { Footer } from "../../components/footer/Footer";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getAd } from "../../api";
+import { capitalizeFirstLetter } from "../../components/functions";
+import { formatDate } from "../../components/functions";
 
 export const AdvPage = () => {
   const images = ["", "", "", "", ""];
+  const { id } = useParams();
+  const [ad, setAd] = useState({});
+  const [adIsFull, setAdIsFull] = useState(false);
+  const [finalDate, setFinalDate] = useState("");
+  const [sellFrom, setSellFrom] = useState("");
+  const [shownPhone, setShownPhone] = useState(false);
+  const [phone, setPhone] = useState("XX-XXXXXX");
+
+  useEffect(() => {
+    if (adIsFull) {
+      // let dateFormatted = ad.created_on.split("T").slice(0, 1).join("");
+      // let createDate = parse(dateFormatted, "yyyy-MM-dd", new Date());
+      // setFinalDate(format(createDate, "MMMM do, yyyy", { locale: ru }));
+      formatDate(setFinalDate, ad.created_on);
+      formatDate(setSellFrom, ad.user.sells_from);
+    }
+  }, [adIsFull]);
+
+  useEffect(() => {
+    setAdIsFull(Object.keys(ad).length > 0);
+  }, [ad]);
+
+  useEffect(() => {
+    getAd(id).then((data) => {
+      setAd(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (adIsFull) {
+      if (shownPhone) {
+        setPhone(ad.user.phone);
+      } else {
+        setPhone("XX-XXXXXX");
+      }
+    }
+  }, [shownPhone]);
+
+  const togglePhone = () => {
+    setShownPhone(!shownPhone);
+  };
 
   return (
     <S.Wrapper>
@@ -12,13 +57,17 @@ export const AdvPage = () => {
         <Header />
         <S.Main>
           <S.MainSearch>
-            <S.SearchLogoLink>
-              <S.SearchLogoImg src="/img/logo.png"></S.SearchLogoImg>
-            </S.SearchLogoLink>
-            <S.SearchLogoMobLink>
-              <S.SearchLogoMobImg src="/img/logo-mob.png"></S.SearchLogoMobImg>
-            </S.SearchLogoMobLink>
-            <Link>
+            <Link to={"/"}>
+              <S.SearchLogoLink>
+                <S.SearchLogoImg src="/img/logo.png"></S.SearchLogoImg>
+              </S.SearchLogoLink>
+            </Link>
+            <Link to={"/"}>
+              <S.SearchLogoMobLink>
+                <S.SearchLogoMobImg src="/img/logo-mob.png"></S.SearchLogoMobImg>
+              </S.SearchLogoMobLink>
+            </Link>
+            <Link to={"/"}>
               <S.SearchButton>Вернуться на главную</S.SearchButton>
             </Link>
           </S.MainSearch>
@@ -26,38 +75,58 @@ export const AdvPage = () => {
             <S.ArticContent>
               <S.ArticleLeft>
                 <S.ArticleFillImg>
-                  <S.ArticleImg>
-                    <S.ArticleImgImage src=""></S.ArticleImgImage>
+                  <S.ArticleImg ad={adIsFull}>
+                    {ad?.images?.length > 0 ? (
+                      <S.ArticleImgImage
+                        src={"http://127.0.0.1:8090/" + ad?.images[0].url}
+                      ></S.ArticleImgImage>
+                    ) : (
+                      <S.ArticleImgImage src=""></S.ArticleImgImage>
+                    )}
                   </S.ArticleImg>
+
                   <S.ArticleImgBar>
-                    {images.map((item) => (
-                      <S.ImgItem>
-                        <S.ImgItemImage src={item}></S.ImgItemImage>
-                      </S.ImgItem>
-                    ))}
+                    {adIsFull
+                      ? ad.images?.map((item) => (
+                          <S.ImgItem ad={adIsFull}>
+                            <S.ImgItemImage
+                              src={"http://127.0.0.1:8090/" + item.url}
+                            ></S.ImgItemImage>
+                          </S.ImgItem>
+                        ))
+                      : images.map((item) => (
+                          <S.ImgItem ad={adIsFull}>
+                            <S.ImgItemImage src=""></S.ImgItemImage>
+                          </S.ImgItem>
+                        ))}
                   </S.ArticleImgBar>
                   <S.ArticleImgBarMob>
-                    {images.map((item) => (
-                      <S.ImgItemMob></S.ImgItemMob>
-                    ))}
+                    {adIsFull
+                      ? ad.images?.map((item) => <S.ImgItemMob></S.ImgItemMob>)
+                      : images.map((item) => <S.ImgItemMob></S.ImgItemMob>)}
                   </S.ArticleImgBarMob>
                 </S.ArticleFillImg>
               </S.ArticleLeft>
               <S.ArticleRight>
                 <S.ArticleBlock>
                   <S.ArticleTitle>
-                    Ракетка для большого тенниса Triumph Pro STС Б/У
+                    {adIsFull ? capitalizeFirstLetter(ad.title) : ""}
                   </S.ArticleTitle>
                   <S.ArticleInfo>
-                    <S.ArticleDate>Сегодня в 10:45</S.ArticleDate>
-                    <S.ArticleCity>Санкт-Петербург</S.ArticleCity>
+                    <S.ArticleDate>
+                      {finalDate ? capitalizeFirstLetter(finalDate) : ""}
+                    </S.ArticleDate>
+                    <S.ArticleCity>
+                      {adIsFull ? capitalizeFirstLetter(ad.user.city) : ""}
+                    </S.ArticleCity>
                     <S.ArticleLink>23 отзыва</S.ArticleLink>
                   </S.ArticleInfo>
-                  <S.ArticlePrice>2 200 ₽</S.ArticlePrice>
-                  <S.ArticleBtn>
-                    Показать&nbsp;телефон
+                  <S.ArticlePrice>{ad?.price} ₽</S.ArticlePrice>
+                  <S.ArticleBtn onClick={togglePhone}>
+                    {shownPhone ? "Скрыть телефон" : "Показать телефон"}
                     <S.ArticleBtnSpan>
-                      8&nbsp;905&nbsp;ХХХ&nbsp;ХХ&nbsp;ХХ
+                      {/* 8&nbsp;905&nbsp;ХХХ&nbsp;ХХ&nbsp;ХХ */}
+                      {phone}
                     </S.ArticleBtnSpan>
                   </S.ArticleBtn>
                   <S.ArticleAuthor>
@@ -65,9 +134,11 @@ export const AdvPage = () => {
                       <S.AuthorImgImage src=""></S.AuthorImgImage>
                     </S.AuthorImg>
                     <S.AuthorCont>
-                      <S.AuthorName>Кирилл</S.AuthorName>
+                      <S.AuthorName>
+                        {adIsFull ? capitalizeFirstLetter(ad.user.name) : ""}
+                      </S.AuthorName>
                       <S.AuthorAbout>
-                        Продает товары с августа 2021
+                        {sellFrom ? "Продает товары с " + sellFrom : ""}
                       </S.AuthorAbout>
                     </S.AuthorCont>
                   </S.ArticleAuthor>
@@ -79,13 +150,9 @@ export const AdvPage = () => {
             <S.MainTitle>Описание товара</S.MainTitle>
             <S.MainContent>
               <S.MainText>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                sunt in culpa qui officia deserunt mollit anim id est laborum.
+                {adIsFull && ad.description
+                  ? capitalizeFirstLetter(ad.description)
+                  : ""}
               </S.MainText>
             </S.MainContent>
           </S.MainContainer>
