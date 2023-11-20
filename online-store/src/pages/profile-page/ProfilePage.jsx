@@ -4,10 +4,12 @@ import { CardItem } from "../../components/card-item/CardItem";
 import { Footer } from "../../components/footer/Footer";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useUserContext } from "../../App";
 
 export const ProfilePage = () => {
   // create state for name, surname, city and phone
-  const [name, setName] = useState();
+  const { user } = useUserContext();
+  const [name, setName] = useState(user?.name);
   const [lastname, setLastname] = useState();
   const [city, setCity] = useState();
   const [phone, setPhone] = useState();
@@ -56,7 +58,7 @@ export const ProfilePage = () => {
             </Link>
           </S.MainSearch>
           <S.MainContainer>
-            <S.Greet>Здравствуйте, Антон!</S.Greet>
+            <S.Greet>Здравствуйте, {user?.name}!</S.Greet>
             <S.MainProfile>
               <S.ProfileContent>
                 <S.ProfileTitle>Настройки профиля</S.ProfileTitle>
