@@ -2,7 +2,11 @@ import { parse, format } from "date-fns";
 import { ru } from "date-fns/locale";
 
 export function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+  if (string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  } else {
+    return;
+  }
 }
 
 export function formatDate(setFunc, source) {

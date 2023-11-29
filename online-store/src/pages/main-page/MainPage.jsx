@@ -3,13 +3,16 @@ import { Header } from "../../components/header/Header";
 import { Link } from "react-router-dom";
 import { CardItem } from "../../components/card-item/CardItem";
 import { Footer } from "../../components/footer/Footer";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
+import { getAds } from "../../api.js";
+import { setCurrentAds } from "../../store/currentAds.js";
 
 export const MainPage = () => {
   const ads = useSelector((state) => state.currentAds.value.ads);
   const [searchWord, setSearchWord] = useState("");
   const [filter, setFilter] = useState("");
+  const dispatch = useDispatch();
   const cards = [
     {
       title: "",
@@ -42,6 +45,12 @@ export const MainPage = () => {
       setFilter("");
     }
   }, [searchWord]);
+
+  useEffect(() => {
+    getAds().then((ads) => {
+      dispatch(setCurrentAds(ads));
+    });
+  }, []);
 
   const useFilterFunc = (e) => {
     e.preventDefault();

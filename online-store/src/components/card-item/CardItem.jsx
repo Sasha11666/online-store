@@ -7,7 +7,6 @@ export const CardItem = ({ title, price, place, date, img_id }) => {
   const [finalDate, setFinalDate] = useState("");
 
   useEffect(() => {
-    console.log(Boolean(date) + date);
     if (date) {
       formatDate(setFinalDate, date);
     }
@@ -20,21 +19,21 @@ export const CardItem = ({ title, price, place, date, img_id }) => {
           <S.CardImageLink>
             <S.CardImageImg
               src={"http://127.0.0.1:8090/" + img_id}
-              adIs={Boolean(img_id)}
+              adis={Boolean(img_id)}
             ></S.CardImageImg>
           </S.CardImageLink>
         </S.CardImage>
         <S.CardContent>
           <S.CardLink>
-            <S.CardTitle adIs={Boolean(title)}>
+            <S.CardTitle adis={Boolean(title)}>
               {capitalizeFirstLetter(title)}
             </S.CardTitle>
           </S.CardLink>
-          <S.CardPrice adIs={Boolean(price)}>{price}&nbsp;₽</S.CardPrice>
-          <S.CardPlace adIs={Boolean(place)}>
+          <S.CardPrice adis={Boolean(price)}>{price}&nbsp;₽</S.CardPrice>
+          <S.CardPlace adis={Boolean(place)}>
             {capitalizeFirstLetter(place)}
           </S.CardPlace>
-          <S.CardDate adIs={Boolean(finalDate)}>
+          <S.CardDate adis={Boolean(finalDate)}>
             {capitalizeFirstLetter(finalDate)}
           </S.CardDate>
         </S.CardContent>

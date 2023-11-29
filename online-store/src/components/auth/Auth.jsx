@@ -36,7 +36,7 @@ export default function Auth({ isLoginMode = false }) {
           setUser(data);
           localStorage.setItem("user", JSON.stringify(data));
           console.log(data);
-          navigate("/");
+          navigate("/profile");
         });
       })
       .catch((err) => {
