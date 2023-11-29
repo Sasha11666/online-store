@@ -441,3 +441,65 @@ export const SettingsButton = styled(Button2)`
     margin: 8px 0px 0;
   }
 `;
+
+export const Inputs = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 100%;
+  margin-bottom: 50px;
+`;
+export const PopupLogin = styled.div`
+  position: relative;
+  width: fit-content;
+  height: fit-content;
+  border: 1px solid #d0cece;
+  border-radius: 12px;
+  padding: 33px 47px 47px 41px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+export const PopupPassword = styled(PopupLogin)`
+  height: fit-content;
+`;
+
+export const BlackoutWrapper = styled.div`
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+export const TitleInput = styled.p`
+  font-size: 18px;
+  margin-top: 38px;
+`;
+export const Input = styled.input`
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #d0cece;
+  padding: 8px 5px;
+  font-style: normal;
+  font-size: 18px;
+
+  &::placeholder {
+    font-style: normal;
+
+    font-size: 18px;
+    color: #d0cece;
+  }
+`;
+export const closeWindow = styled.img`
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  cursor: pointer;
+  width: 15px;
+`;

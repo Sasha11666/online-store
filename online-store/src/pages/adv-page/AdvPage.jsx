@@ -1,13 +1,25 @@
 import * as S from "./styles";
 import { Header } from "../../components/header/Header";
 import { Footer } from "../../components/footer/Footer";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getAd } from "../../api";
+import {
+  addUserImages,
+  deleteAd,
+  getAd,
+  getComments,
+  submitComment,
+  updateAd,
+  updateToken,
+} from "../../api";
 import { capitalizeFirstLetter } from "../../components/functions";
 import { formatDate } from "../../components/functions";
+import { useUserContext } from "../../App";
+import { useNavigate } from "react-router-dom";
 
 export const AdvPage = () => {
+  const { user } = useUserContext();
+  let navigate = useNavigate();
   const images = ["", "", "", "", ""];
   const { id } = useParams();
   const [ad, setAd] = useState({});
@@ -16,12 +28,15 @@ export const AdvPage = () => {
   const [sellFrom, setSellFrom] = useState("");
   const [shownPhone, setShownPhone] = useState(false);
   const [phone, setPhone] = useState("XX-XXXXXX");
+  const [openUpdateForm, setOpenUpdateForm] = useState(false);
+  const [openComments, setOpenComments] = useState(false);
+  const [comments, setComments] = useState([
+    { name: "Nina", text: "Like it" },
+    { name: "John", text: "Awesome" },
+  ]);
 
   useEffect(() => {
     if (adIsFull) {
-      // let dateFormatted = ad.created_on.split("T").slice(0, 1).join("");
-      // let createDate = parse(dateFormatted, "yyyy-MM-dd", new Date());
-      // setFinalDate(format(createDate, "MMMM do, yyyy", { locale: ru }));
       formatDate(setFinalDate, ad.created_on);
       formatDate(setSellFrom, ad.user.sells_from);
     }
@@ -51,8 +66,83 @@ export const AdvPage = () => {
     setShownPhone(!shownPhone);
   };
 
+  const deleteAdFunc = (e) => {
+    e.preventDefault();
+    deleteAd(ad.id)
+      .then(() => {
+        navigate("/");
+      })
+      .catch((err) => {
+        updateToken(
+          `${JSON.parse(localStorage.getItem("accessToken"))}`,
+          `${JSON.parse(localStorage.getItem("refreshToken"))}`
+        )
+          .then((data) => {
+            if (data) {
+              localStorage.setItem(
+                "accessToken",
+                JSON.stringify(data.access_token)
+              );
+              localStorage.setItem(
+                "refreshToken",
+                JSON.stringify(data.refresh_token)
+              );
+            }
+            deleteAd(ad.id).then((data) => {
+              navigate("/");
+            });
+          })
+          .catch((err) => {
+            console.log(!+err);
+          });
+      });
+  };
+
+  const updateAdFunc = () => {
+    document.body.style.overflow = "hidden";
+    setOpenUpdateForm(true);
+  };
+
+  const openCommentsFunc = () => {
+    document.body.style.overflow = "hidden";
+    getComments(ad.id)
+      .then((data) => {
+        setComments(data);
+      })
+      .catch(() => {
+        updateToken(
+          `${JSON.parse(localStorage.getItem("accessToken"))}`,
+          `${JSON.parse(localStorage.getItem("refreshToken"))}`
+        ).then((data) => {
+          if (data) {
+            localStorage.setItem(
+              "accessToken",
+              JSON.stringify(data.access_token)
+            );
+            localStorage.setItem(
+              "refreshToken",
+              JSON.stringify(data.refresh_token)
+            );
+          }
+          getComments(ad.id);
+        });
+      });
+    setOpenComments(true);
+  };
+
   return (
     <S.Wrapper>
+      {openUpdateForm && (
+        <UpdateAdForm setOpenUpdateForm={setOpenUpdateForm} id={ad?.id} />
+      )}
+      {openComments && (
+        <OpenCommentsForm
+          setOpenComments={setOpenComments}
+          id={ad?.id}
+          comments={comments}
+          setComments={setComments}
+        />
+      )}
       <S.Container>
         <Header />
         <S.Main>
@@ -119,16 +209,29 @@ export const AdvPage = () => {
                     <S.ArticleCity>
                       {adIsFull ? capitalizeFirstLetter(ad.user.city) : ""}
                     </S.ArticleCity>
-                    <S.ArticleLink>23 отзыва</S.ArticleLink>
+                    <S.ArticleLink onClick={openCommentsFunc}>
+                      23 отзыва
+                    </S.ArticleLink>
                   </S.ArticleInfo>
                   <S.ArticlePrice>{ad?.price} ₽</S.ArticlePrice>
-                  <S.ArticleBtn onClick={togglePhone}>
-                    {shownPhone ? "Скрыть телефон" : "Показать телефон"}
-                    <S.ArticleBtnSpan>
-                      {/* 8&nbsp;905&nbsp;ХХХ&nbsp;ХХ&nbsp;ХХ */}
-                      {phone}
-                    </S.ArticleBtnSpan>
-                  </S.ArticleBtn>
+                  {ad?.user?.name === user.name ? (
+                    <S.ArticleBtns>
+                      <S.ArticleBtn onClick={updateAdFunc}>
+                        Редактировать
+                      </S.ArticleBtn>
+                      <S.ArticleBtn onClick={deleteAdFunc}>
+                        Снять с публикации
+                      </S.ArticleBtn>
+                    </S.ArticleBtns>
+                  ) : (
+                    <S.ArticleBtn onClick={togglePhone}>
+                      {shownPhone ? "Скрыть телефон" : "Показать телефон"}
+                      <S.ArticleBtnSpan>
+                        {/* 8&nbsp;905&nbsp;ХХХ&nbsp;ХХ&nbsp;ХХ */}
+                        {phone}
+                      </S.ArticleBtnSpan>
+                    </S.ArticleBtn>
+                  )}
                   <S.ArticleAuthor>
                     <S.AuthorImg>
                       <S.AuthorImgImage src=""></S.AuthorImgImage>
@@ -160,5 +263,240 @@ export const AdvPage = () => {
         <Footer />
       </S.Container>
     </S.Wrapper>
+  );
+};
+
+const OpenCommentsForm = ({ setOpenComments, id, comments, setComments }) => {
+  const [comment, setComment] = useState("");
+
+  const mockComments = [{ name: "Loading...", text: "Loading..." }];
+  console.log(comments);
+
+  const submitCommentFunc = (e) => {
+    e.preventDefault();
+    submitComment(id, comment)
+      .then(() => {
+        setComment("");
+        getComments(id)
+          .then((data) => {
+            setComments(data);
+          })
+          .catch((err) => {
+            updateToken(
+              `${JSON.parse(localStorage.getItem("accessToken"))}`,
+              `${JSON.parse(localStorage.getItem("refreshToken"))}`
+            ).then((data) => {
+              if (data) {
+                localStorage.setItem(
+                  "accessToken",
+                  JSON.stringify(data.access_token)
+                );
+                localStorage.setItem(
+                  "refreshToken",
+                  JSON.stringify(data.refresh_token)
+                );
+              }
+              getComments(id);
+            });
+          });
+      })
+      .catch((err) => {
+        updateToken(
+          `${JSON.parse(localStorage.getItem("accessToken"))}`,
+          `${JSON.parse(localStorage.getItem("refreshToken"))}`
+        ).then((data) => {
+          if (data) {
+            localStorage.setItem(
+              "accessToken",
+              JSON.stringify(data.access_token)
+            );
+            localStorage.setItem(
+              "refreshToken",
+              JSON.stringify(data.refresh_token)
+            );
+          }
+          submitComment(id, comment);
+        });
+      });
+  };
+
+  const closeWindow = () => {
+    document.body.style.overflow = null;
+    setOpenComments(false);
+  };
+
+  return (
+    <>
+      <S.BlackoutWrapper>
+        <S.PopupPassword>
+          <S.closeWindow src="/img/close.svg" onClick={closeWindow} />
+          <S.ModalContent>
+            <S.TitleComments>Отзывы о товаре</S.TitleComments>
+            <S.Label htmlFor="text">Добавить отзыв</S.Label>
+            <S.FormTextarea
+              name="text"
+              id="formArea"
+              cols="auto"
+              rows="4"
+              value={comment}
+              placeholder="Введите отзыв"
+              onChange={(event) => {
+                setComment(event.target.value);
+              }}
+            ></S.FormTextarea>
+            <S.SubmitCommentButton onClick={submitCommentFunc}>
+              Опубликовать
+            </S.SubmitCommentButton>
+            <S.CommentsBlock>
+              {comments
+                ? comments.map((item) => (
+                    <S.CommentBlock>
+                      <S.CommentName>{item.author?.name}</S.CommentName>
+                      <S.CommentText>{item.text}</S.CommentText>
+                    </S.CommentBlock>
+                  ))
+                : mockComments.map((item) => (
+                    <div>
+                      <h2>{item.name}</h2>
+                      <p>{item.text}</p>
+                    </div>
+                  ))}
+            </S.CommentsBlock>
+          </S.ModalContent>
+        </S.PopupPassword>
+      </S.BlackoutWrapper>
+    </>
+  );
+};
+
+const UpdateAdForm = ({ setOpenUpdateForm, id }) => {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState(0);
+  // const fileInput = document.querySelector("#image-file");
+  // const formData = new FormData();
+
+  // formData.append("file", fileInput?.files[0]);
+
+  const submitForm = (e) => {
+    e.preventDefault();
+    const fileInput = document.querySelector("#image-file");
+    const formData = new FormData();
+    formData.append("file", fileInput?.files[0]);
+
+    updateAd(id, String(title), String(description), Number(price))
+      .then((data) => {
+        setTitle("");
+        setDescription("");
+        setPrice(0);
+      })
+      .catch((err) => {
+        updateToken(
+          `${JSON.parse(localStorage.getItem("accessToken"))}`,
+          `${JSON.parse(localStorage.getItem("refreshToken"))}`
+        ).then((data) => {
+          if (data) {
+            localStorage.setItem(
+              "accessToken",
+              JSON.stringify(data.access_token)
+            );
+            localStorage.setItem(
+              "refreshToken",
+              JSON.stringify(data.refresh_token)
+            );
+          }
+          updateAd(id, String(title), String(description), Number(price)).then(
+            (data) => {
+              setTitle("");
+              setDescription("");
+              setPrice(0);
+            }
+          );
+        });
+      });
+    addUserImages(formData)
+      .then(() => {})
+      .catch((err) => {
+        updateToken(
+          `${JSON.parse(localStorage.getItem("accessToken"))}`,
+          `${JSON.parse(localStorage.getItem("refreshToken"))}`
+        ).then((data) => {
+          if (data) {
+            localStorage.setItem(
+              "accessToken",
+              JSON.stringify(data.access_token)
+            );
+            localStorage.setItem(
+              "refreshToken",
+              JSON.stringify(data.refresh_token)
+            );
+          }
+          addUserImages(formData);
+        });
+      });
+  };
+
+  const closeForm = () => {
+    document.body.style.overflow = null;
+    setOpenUpdateForm(false);
+  };
+
+  return (
+    <S.WrapperForm>
+      <S.ModalBlock>
+        <S.ModalContent>
+          <S.ModalTitle>Редактировать объявление</S.ModalTitle>
+          <S.ModalCloseBtn onClick={closeForm}>
+            <S.ModalCloseBtnLine></S.ModalCloseBtnLine>
+          </S.ModalCloseBtn>
+          <S.ModalForm action="" id="formNewArt">
+            <S.FormBlock>
+              <S.Label htmlFor="name">Название</S.Label>
+              <S.FormInput
+                type="text"
+                name="name"
+                id="formName"
+                value={title}
+                placeholder="Введите название"
+                onChange={(event) => {
+                  setTitle(event.target.value);
+                }}
+              ></S.FormInput>
+            </S.FormBlock>
+            <S.FormBlock>
+              <S.Label htmlFor="text">Описание</S.Label>
+              <S.FormTextarea
+                name="text"
+                id="formArea"
+                cols="auto"
+                rows="10"
+                value={description}
+                placeholder="Введите описание"
+                onChange={(event) => {
+                  setDescription(event.target.value);
+                }}
+              ></S.FormTextarea>
+            </S.FormBlock>
+            <S.FormBlock>
+              <S.Label htmlFor="price">Цена</S.Label>
+              <S.FormInputPrice
+                type="text"
+                name="price"
+                id="price-input"
+                value={price}
+                onChange={(event) => {
+                  setPrice(event.target.value);
+                }}
+              ></S.FormInputPrice>
+              <S.FormInputPriceCover></S.FormInputPriceCover>
+              <input type="file" id="image-file" />
+            </S.FormBlock>
+            <S.FormButton onClick={submitForm} type="submit">
+              Опубликовать
+            </S.FormButton>
+          </S.ModalForm>
+        </S.ModalContent>
+      </S.ModalBlock>
+    </S.WrapperForm>
   );
 };

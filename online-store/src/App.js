@@ -1,5 +1,5 @@
 import React, { useEffect, createContext, useContext, useState } from "react";
-import "./App.css";
+
 import { AppRoutes } from "./routes/routes";
 import { createGlobalStyle } from "styled-components";
 import { getAds } from "./api.js";
@@ -69,11 +69,12 @@ function App() {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
 
   useEffect(() => {
-    getAds().then((ads) => {
-      dispatch(setCurrentAds(ads));
-    });
+    // getAds().then((ads) => {
+    //   dispatch(setCurrentAds(ads));
+    // });
     setUser(JSON.parse(localStorage.getItem("user")));
   }, []);
+
   return (
     <div className="App">
       <GlobalStyle />
