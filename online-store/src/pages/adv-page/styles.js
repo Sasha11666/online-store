@@ -524,6 +524,7 @@ export const AuthorCont = styled.div`
 `;
 
 export const AuthorName = styled.p`
+  cursor: pointer;
   font-size: 20px;
   line-height: 26px;
   font-weight: 600;
