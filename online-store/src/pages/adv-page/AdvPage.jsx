@@ -16,10 +16,13 @@ import { capitalizeFirstLetter } from "../../components/functions";
 import { formatDate } from "../../components/functions";
 import { useUserContext } from "../../App";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setCurrentAdv } from "../../store/currentAdv";
 
 export const AdvPage = () => {
   const { user } = useUserContext();
   let navigate = useNavigate();
+  const dispatch = useDispatch();
   const images = ["", "", "", "", ""];
   const { id } = useParams();
   const [ad, setAd] = useState({});
@@ -31,8 +34,7 @@ export const AdvPage = () => {
   const [openUpdateForm, setOpenUpdateForm] = useState(false);
   const [openComments, setOpenComments] = useState(false);
   const [comments, setComments] = useState([
-    { name: "Nina", text: "Like it" },
-    { name: "John", text: "Awesome" },
+    { name: "Loading...", text: "Loading..." },
   ]);
 
   useEffect(() => {
@@ -49,6 +51,29 @@ export const AdvPage = () => {
   useEffect(() => {
     getAd(id).then((data) => {
       setAd(data);
+      dispatch(setCurrentAdv(data));
+      getComments(data?.id)
+        .then((data) => {
+          setComments(data);
+        })
+        .catch(() => {
+          updateToken(
+            `${JSON.parse(localStorage.getItem("accessToken"))}`,
+            `${JSON.parse(localStorage.getItem("refreshToken"))}`
+          ).then((data) => {
+            if (data) {
+              localStorage.setItem(
+                "accessToken",
+                JSON.stringify(data.access_token)
+              );
+              localStorage.setItem(
+                "refreshToken",
+                JSON.stringify(data.refresh_token)
+              );
+            }
+            getComments(data?.id);
+          });
+        });
     });
   }, []);
 
@@ -105,29 +130,33 @@ export const AdvPage = () => {
 
   const openCommentsFunc = () => {
     document.body.style.overflow = "hidden";
-    getComments(ad.id)
-      .then((data) => {
-        setComments(data);
-      })
-      .catch(() => {
-        updateToken(
-          `${JSON.parse(localStorage.getItem("accessToken"))}`,
-          `${JSON.parse(localStorage.getItem("refreshToken"))}`
-        ).then((data) => {
-          if (data) {
-            localStorage.setItem(
-              "accessToken",
-              JSON.stringify(data.access_token)
-            );
-            localStorage.setItem(
-              "refreshToken",
-              JSON.stringify(data.refresh_token)
-            );
-          }
-          getComments(ad.id);
-        });
-      });
+    // getComments(ad.id)
+    //   .then((data) => {
+    //     setComments(data);
+    //   })
+    //   .catch(() => {
+    //     updateToken(
+    //       `${JSON.parse(localStorage.getItem("accessToken"))}`,
+    //       `${JSON.parse(localStorage.getItem("refreshToken"))}`
+    //     ).then((data) => {
+    //       if (data) {
+    //         localStorage.setItem(
+    //           "accessToken",
+    //           JSON.stringify(data.access_token)
+    //         );
+    //         localStorage.setItem(
+    //           "refreshToken",
+    //           JSON.stringify(data.refresh_token)
+    //         );
+    //       }
+    //       getComments(ad.id);
+    //     });
+    //   });
     setOpenComments(true);
+  };
+
+  const openSellerProfileFunc = () => {
+    navigate("/seller-page");
   };
 
   return (
@@ -210,7 +239,7 @@ export const AdvPage = () => {
                       {adIsFull ? capitalizeFirstLetter(ad.user.city) : ""}
                     </S.ArticleCity>
                     <S.ArticleLink onClick={openCommentsFunc}>
-                      23 отзыва
+                      {comments?.length} отзыва
                     </S.ArticleLink>
                   </S.ArticleInfo>
                   <S.ArticlePrice>{ad?.price} ₽</S.ArticlePrice>
@@ -237,7 +266,7 @@ export const AdvPage = () => {
                       <S.AuthorImgImage src=""></S.AuthorImgImage>
                     </S.AuthorImg>
                     <S.AuthorCont>
-                      <S.AuthorName>
+                      <S.AuthorName onClick={openSellerProfileFunc}>
                         {adIsFull ? capitalizeFirstLetter(ad.user.name) : ""}
                       </S.AuthorName>
                       <S.AuthorAbout>
@@ -414,7 +443,7 @@ const UpdateAdForm = ({ setOpenUpdateForm, id }) => {
           );
         });
       });
-    addUserImages(formData)
+    addUserImages(formData, id)
       .then(() => {})
       .catch((err) => {
         updateToken(

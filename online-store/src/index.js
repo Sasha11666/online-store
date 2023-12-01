@@ -6,10 +6,12 @@ import { BrowserRouter } from "react-router-dom";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import currentAdsReducer from "./store/currentAds";
+import currentAdvReducer from "./store/currentAdv";
 
 const store = configureStore({
   reducer: {
     currentAds: currentAdsReducer,
+    currentAdv: currentAdvReducer,
   },
 });
 

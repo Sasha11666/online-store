@@ -7,6 +7,7 @@ import { ProtectedRoute } from "../components/ProtectedRoute";
 import { ProfilePage } from "../pages/profile-page/ProfilePage";
 import { AdvPage } from "../pages/adv-page/AdvPage";
 import { AdForm } from "../pages/create-ad/AdForm";
+import { SellerPage } from "../pages/seller-page/SellerPage";
 
 export const AppRoutes = () => {
   return (
@@ -23,6 +24,7 @@ export const AppRoutes = () => {
       >
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/create-ad" element={<AdForm />} />
+        <Route path="/seller-page" element={<SellerPage />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

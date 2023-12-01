@@ -314,11 +314,13 @@ export const SettingsRight = styled.div`
   }
 `;
 
-export const SettingsForm = styled.form`
+export const SettingsBlock = styled.div`
   width: 630px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  flex-direction: column;
+  gap: 12px;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
   @media screen and (max-width: 620px) {
@@ -451,83 +453,38 @@ export const Inputs = styled.div`
   width: 100%;
   margin-bottom: 50px;
 `;
-export const PopupLogin = styled.div`
-  position: relative;
-  width: fit-content;
-  height: fit-content;
-  border: 1px solid #d0cece;
-  border-radius: 12px;
-  padding: 33px 47px 47px 41px;
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-export const PopupPassword = styled(PopupLogin)`
-  height: fit-content;
-`;
 
-export const BlackoutWrapper = styled.div`
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.9);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-`;
-export const TitleInput = styled.p`
-  font-size: 18px;
-  margin-top: 38px;
-`;
-export const Input = styled.input`
-  width: 100%;
-  border: none;
-  border-bottom: 1px solid #d0cece;
-  padding: 8px 5px;
-  font-style: normal;
-  font-size: 18px;
-
-  &::placeholder {
-    font-style: normal;
-
-    font-size: 18px;
-    color: #d0cece;
+export const ArticleBtn = styled(Button2)`
+  background-color: #009ee4;
+  border-radius: 6px;
+  border: 1px solid #009ee4;
+  width: 214px;
+  height: 62px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 22px;
+  color: #ffffff;
+  font-family: "Roboto", sans-serif;
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    height: 57px;
+    font-size: 14px;
+    line-height: 20px;
+    color: #ffffff;
   }
 `;
-export const closeWindow = styled.img`
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  cursor: pointer;
-  width: 15px;
-`;
 
-export const PicChangeBlock = styled.div`
+export const ArticleBtns = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: space-between;
   gap: 8px;
-  cursor: pointer;
-  margin-top: 16px;
-  justify-content: center;
-  align-items: center;
-  width: 50px;
 `;
 
-export const PicChangeInput = styled.input`
-  margin-top: 12px;
-`;
-
-export const uploadProfilePicButton = styled.div`
-  cursor: pointer;
-  width: 70px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  color: #009ee4;
+export const ArticleBtnSpan = styled.span`
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+  @media screen and (max-width: 768px) {
+    font-size: 12px;
+  }
 `;

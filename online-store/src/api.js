@@ -130,8 +130,26 @@ export async function createUserAd(title, description, price) {
   return data;
 }
 
-export async function addUserImages(formData) {
-  const response = await fetch("http://127.0.0.1:8090/ads", {
+export async function addUserImages(formData, id) {
+  const response = await fetch(`http://127.0.0.1:8090/ads/${id}/image`, {
+    method: "POST",
+    body: formData,
+    headers: {
+      Authorization: `Bearer ${JSON.parse(
+        localStorage.getItem("accessToken")
+      )}`,
+    },
+  });
+  if (response.status === 422) {
+    throw new Error("Ошибка сервера");
+  }
+
+  const data = await response.json();
+  return data;
+}
+
+export async function addUserProfilePic(formData) {
+  const response = await fetch(`http://127.0.0.1:8090/user/avatar`, {
     method: "POST",
     body: formData,
     headers: {

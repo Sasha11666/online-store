@@ -5,10 +5,16 @@ import { Footer } from "../../components/footer/Footer";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useUserContext } from "../../App";
-import { getUserAds, updatePassword, updateToken, updateUser } from "../../api";
+import {
+  addUserProfilePic,
+  getUserAds,
+  updatePassword,
+  updateToken,
+  updateUser,
+} from "../../api";
 
 export const ProfilePage = () => {
-  // create state for name, surname, city and phone
+  const { setUser } = useUserContext();
   const { user } = useUserContext();
   const [name, setName] = useState(user?.name);
   const [lastname, setLastname] = useState(user?.surname);
@@ -16,9 +22,7 @@ export const ProfilePage = () => {
   const [phone, setPhone] = useState(user?.phone);
   const [userCards, setUserCards] = useState([]);
   const [openEditPassword, setOpenEditPassword] = useState(false);
-  useEffect(() => {
-    console.log(user);
-  }, []);
+  const [inputVisible, setInputVisible] = useState(false);
 
   const cards = [
     {
@@ -70,9 +74,27 @@ export const ProfilePage = () => {
         setLastname(user.surname);
         setCity(user.city);
         setPhone(user.phone);
+        setUser(user);
       })
       .catch((err) => {
-        console.log(err);
+        updateToken(
+          `${JSON.parse(localStorage.getItem("accessToken"))}`,
+          `${JSON.parse(localStorage.getItem("refreshToken"))}`
+        ).then((data) => {
+          if (data) {
+            localStorage.setItem(
+              "accessToken",
+              JSON.stringify(data.access_token)
+            );
+            localStorage.setItem(
+              "refreshToken",
+              JSON.stringify(data.refresh_token)
+            );
+          }
+          updateUser(name, lastname, city, phone).then((data) => {
+            setUser(data);
+          });
+        });
       });
   };
 
@@ -80,6 +102,46 @@ export const ProfilePage = () => {
     e.preventDefault();
     document.body.style.overflow = "hidden";
     setOpenEditPassword(true);
+  };
+
+  const toggleInputPic = () => {
+    setInputVisible(!inputVisible);
+  };
+
+  const submitProfilePicFunc = (e) => {
+    e.preventDefault();
+    toggleInputPic();
+    const fileInput = document.querySelector("#image-file");
+    const formData = new FormData();
+    formData.append("file", fileInput?.files[0]);
+    addUserProfilePic(formData)
+      .then((data) => {
+        setUser(data);
+      })
+      .catch((err) => {
+        updateToken(
+          `${JSON.parse(localStorage.getItem("accessToken"))}`,
+          `${JSON.parse(localStorage.getItem("refreshToken"))}`
+        ).then((data) => {
+          if (data) {
+            localStorage.setItem(
+              "accessToken",
+              JSON.stringify(data.access_token)
+            );
+            localStorage.setItem(
+              "refreshToken",
+              JSON.stringify(data.refresh_token)
+            );
+          }
+          addUserProfilePic(formData)
+            .then((data) => {
+              setUser(data);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        });
+      });
   };
 
   return (
@@ -110,10 +172,31 @@ export const ProfilePage = () => {
                   <S.SettingsLeft>
                     <S.SettingsImage>
                       <S.SettingsImageLink>
-                        <S.SettingsImageImg src="#"></S.SettingsImageImg>
+                        <S.SettingsImageImg
+                          src={"http://127.0.0.1:8090/" + user.avatar}
+                        ></S.SettingsImageImg>
                       </S.SettingsImageLink>
                     </S.SettingsImage>
-                    <S.SettingsChangePic>Заменить</S.SettingsChangePic>
+                    <S.PicChangeBlock>
+                      {!inputVisible && (
+                        <S.SettingsChangePic onClick={toggleInputPic}>
+                          Заменить
+                        </S.SettingsChangePic>
+                      )}
+                      {inputVisible && (
+                        <>
+                          <S.PicChangeInput
+                            type="file"
+                            id="image-file"
+                          ></S.PicChangeInput>
+                          <S.uploadProfilePicButton
+                            onClick={submitProfilePicFunc}
+                          >
+                            Загрузить
+                          </S.uploadProfilePicButton>
+                        </>
+                      )}
+                    </S.PicChangeBlock>
                   </S.SettingsLeft>
                   <S.SettingsRight>
                     <S.SettingsForm>
@@ -187,6 +270,7 @@ export const ProfilePage = () => {
                           price={card.price}
                           place={card.user.city}
                           date={card.created_on}
+                          img_id={card.images[0]?.url}
                         />
                       </Link>
                     ))
