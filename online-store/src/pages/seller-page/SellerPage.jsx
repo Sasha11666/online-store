@@ -96,18 +96,24 @@ export const SellerPage = () => {
             <S.MainTitle>Товары продавца</S.MainTitle>
             <S.MainContent>
               <S.Cards>
-                {userCards.length > 0
-                  ? userCards.map((card) => (
-                      <Link to={`/advs/${card.id}`}>
-                        <CardItem
-                          title={card.title}
-                          price={card.price}
-                          place={card.user.city}
-                          date={card.created_on}
-                          img_id={card.images[0]?.url}
-                        />
-                      </Link>
-                    ))
+                {ads.length > 0
+                  ? ads
+                      .filter((val) => {
+                        if (val.user.name === adv.user.name) {
+                          return val;
+                        }
+                      })
+                      .map((card) => (
+                        <Link to={`/advs/${card.id}`}>
+                          <CardItem
+                            title={card.title}
+                            price={card.price}
+                            place={card.user.city}
+                            date={card.created_on}
+                            img_id={card.images[0]?.url}
+                          />
+                        </Link>
+                      ))
                   : cards.map(({ title, price, place, date }) => (
                       <CardItem
                         title={title}
