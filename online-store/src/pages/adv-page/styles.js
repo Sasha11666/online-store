@@ -326,6 +326,7 @@ export const ArticleImgBar = styled.div`
   }
 `;
 export const ImgItem = styled.div`
+  cursor: pointer;
   width: 88px;
   min-width: 88px;
   height: ${(props) => (props.ad ? "auto" : "88px")};
@@ -1044,4 +1045,38 @@ export const SubmitCommentButton = styled(SearchButton)`
 
 export const TitleComments = styled(ModalTitle)`
   margin-bottom: 32px;
+`;
+
+export const CommentHeading = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 13px;
+`;
+
+export const CommentPic = styled.div`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+`;
+
+export const CommentPicImg = styled.img`
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+  display: block;
+  -o-object-fit: cover;
+  object-fit: cover;
+`;
+
+export const CommentBody = styled.div`
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+export const CommentPar = styled.p`
+  font-weight: 600;
 `;

@@ -35,7 +35,6 @@ export default function Auth({ isLoginMode = false }) {
         getUser(data.access_token).then((data) => {
           setUser(data);
           localStorage.setItem("user", JSON.stringify(data));
-          console.log(data);
           navigate("/profile");
         });
       })
@@ -56,7 +55,6 @@ export default function Auth({ isLoginMode = false }) {
     city,
     phone
   ) => {
-    console.log(phone);
     if (!email || !password || !repeatPassword) {
       setError("Заполните все поля");
       return;
@@ -68,7 +66,6 @@ export default function Auth({ isLoginMode = false }) {
     setDisable(true);
     registerUser(email, password, name, surname, city, phone)
       .then((data) => {
-        console.log(data);
         navigate("/login");
       })
       .catch((err) => {
