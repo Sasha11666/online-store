@@ -16,6 +16,7 @@ export const AppRoutes = () => {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/" element={<MainPage />} />
       <Route path="/advs/:id" element={<AdvPage />} />
+      <Route path="/seller-page" element={<SellerPage />} />
 
       <Route
         element={
@@ -24,7 +25,6 @@ export const AppRoutes = () => {
       >
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/create-ad" element={<AdForm />} />
-        <Route path="/seller-page" element={<SellerPage />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

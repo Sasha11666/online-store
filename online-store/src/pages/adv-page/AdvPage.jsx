@@ -1,7 +1,7 @@
 import * as S from "./styles";
 import { Header } from "../../components/header/Header";
 import { Footer } from "../../components/footer/Footer";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   addUserImages,
@@ -36,6 +36,11 @@ export const AdvPage = () => {
   const [comments, setComments] = useState([
     { name: "Loading...", text: "Loading..." },
   ]);
+  const [mainImg, setMainImg] = useState("");
+
+  const changeMainImgFunc = (url) => {
+    setMainImg(url);
+  };
 
   useEffect(() => {
     if (adIsFull) {
@@ -52,6 +57,7 @@ export const AdvPage = () => {
     getAd(id).then((data) => {
       setAd(data);
       dispatch(setCurrentAdv(data));
+      setMainImg(data.images[0].url);
       getComments(data?.id)
         .then((data) => {
           setComments(data);
@@ -130,28 +136,6 @@ export const AdvPage = () => {
 
   const openCommentsFunc = () => {
     document.body.style.overflow = "hidden";
-    // getComments(ad.id)
-    //   .then((data) => {
-    //     setComments(data);
-    //   })
-    //   .catch(() => {
-    //     updateToken(
-    //       `${JSON.parse(localStorage.getItem("accessToken"))}`,
-    //       `${JSON.parse(localStorage.getItem("refreshToken"))}`
-    //     ).then((data) => {
-    //       if (data) {
-    //         localStorage.setItem(
-    //           "accessToken",
-    //           JSON.stringify(data.access_token)
-    //         );
-    //         localStorage.setItem(
-    //           "refreshToken",
-    //           JSON.stringify(data.refresh_token)
-    //         );
-    //       }
-    //       getComments(ad.id);
-    //     });
-    //   });
     setOpenComments(true);
   };
 
@@ -197,7 +181,7 @@ export const AdvPage = () => {
                   <S.ArticleImg ad={adIsFull}>
                     {ad?.images?.length > 0 ? (
                       <S.ArticleImgImage
-                        src={"http://127.0.0.1:8090/" + ad?.images[0].url}
+                        src={"http://127.0.0.1:8090/" + mainImg}
                       ></S.ArticleImgImage>
                     ) : (
                       <S.ArticleImgImage src=""></S.ArticleImgImage>
@@ -207,7 +191,10 @@ export const AdvPage = () => {
                   <S.ArticleImgBar>
                     {adIsFull
                       ? ad.images?.map((item) => (
-                          <S.ImgItem ad={adIsFull}>
+                          <S.ImgItem
+                            ad={adIsFull}
+                            onClick={() => changeMainImgFunc(item.url)}
+                          >
                             <S.ImgItemImage
                               src={"http://127.0.0.1:8090/" + item.url}
                             ></S.ImgItemImage>
@@ -255,10 +242,7 @@ export const AdvPage = () => {
                   ) : (
                     <S.ArticleBtn onClick={togglePhone}>
                       {shownPhone ? "Скрыть телефон" : "Показать телефон"}
-                      <S.ArticleBtnSpan>
-                        {/* 8&nbsp;905&nbsp;ХХХ&nbsp;ХХ&nbsp;ХХ */}
-                        {phone}
-                      </S.ArticleBtnSpan>
+                      <S.ArticleBtnSpan>{phone}</S.ArticleBtnSpan>
                     </S.ArticleBtn>
                   )}
                   <S.ArticleAuthor>
@@ -299,7 +283,6 @@ const OpenCommentsForm = ({ setOpenComments, id, comments, setComments }) => {
   const [comment, setComment] = useState("");
 
   const mockComments = [{ name: "Loading...", text: "Loading..." }];
-  console.log(comments);
 
   const submitCommentFunc = (e) => {
     e.preventDefault();
@@ -380,8 +363,19 @@ const OpenCommentsForm = ({ setOpenComments, id, comments, setComments }) => {
               {comments
                 ? comments.map((item) => (
                     <S.CommentBlock>
-                      <S.CommentName>{item.author?.name}</S.CommentName>
-                      <S.CommentText>{item.text}</S.CommentText>
+                      <S.CommentHeading>
+                        <S.CommentPic>
+                          <S.CommentPicImg
+                            src={"http://127.0.0.1:8090/" + item.author.avatar}
+                          ></S.CommentPicImg>
+                        </S.CommentPic>
+                        <S.CommentName>{item.author?.name}</S.CommentName>
+                        <S.CommentName>{item.author?.sells_from}</S.CommentName>
+                      </S.CommentHeading>
+                      <S.CommentBody>
+                        <S.CommentPar>Комментарий</S.CommentPar>
+                        <S.CommentText>{item.text}</S.CommentText>
+                      </S.CommentBody>
                     </S.CommentBlock>
                   ))
                 : mockComments.map((item) => (
@@ -402,10 +396,6 @@ const UpdateAdForm = ({ setOpenUpdateForm, id }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
-  // const fileInput = document.querySelector("#image-file");
-  // const formData = new FormData();
-
-  // formData.append("file", fileInput?.files[0]);
 
   const submitForm = (e) => {
     e.preventDefault();

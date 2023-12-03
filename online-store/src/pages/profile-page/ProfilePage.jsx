@@ -45,7 +45,6 @@ export const ProfilePage = () => {
         )
           .then((data) => {
             if (data) {
-              console.log("success");
               localStorage.setItem(
                 "accessToken",
                 JSON.stringify(data.access_token)
@@ -69,12 +68,12 @@ export const ProfilePage = () => {
     e.preventDefault();
     updateUser(name, lastname, city, phone)
       .then((user) => {
-        console.log(":)");
         setName(user.name);
         setLastname(user.surname);
         setCity(user.city);
         setPhone(user.phone);
         setUser(user);
+        localStorage.setItem("user", JSON.stringify(user));
       })
       .catch((err) => {
         updateToken(
@@ -301,7 +300,6 @@ const NewPasswordForm = ({ setOpenEditPassword }) => {
     updatePassword(oldPass, newPass)
       .then(() => {})
       .catch((err) => {
-        console.log(err.message);
         if (err.message === "Неверный пароль") {
           setError(err.message);
         }
@@ -320,7 +318,6 @@ const NewPasswordForm = ({ setOpenEditPassword }) => {
             );
           }
           updatePassword(oldPass, newPass).catch((err) => {
-            console.log(err.message);
             if (err.message === "Неверный пароль") {
               setError(err.message);
             }

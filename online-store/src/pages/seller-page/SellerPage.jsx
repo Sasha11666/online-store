@@ -4,22 +4,11 @@ import { CardItem } from "../../components/card-item/CardItem";
 import { Footer } from "../../components/footer/Footer";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useUserContext } from "../../App";
-import {
-  addUserProfilePic,
-  getUserAds,
-  updatePassword,
-  updateToken,
-  updateUser,
-} from "../../api";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 export const SellerPage = () => {
-  const { setUser } = useUserContext();
-  const { user } = useUserContext();
   const ads = useSelector((state) => state.currentAds.value.ads);
   const adv = useSelector((state) => state.currentAdv.value.adv);
-  const [userCards, setUserCards] = useState([]);
   const [shownPhone, setShownPhone] = useState(false);
   const [phone, setPhone] = useState("XX-XXXXXX");
 
@@ -83,10 +72,7 @@ export const SellerPage = () => {
                       </S.SettingsItem>
                       <S.ArticleBtn onClick={togglePhone}>
                         {shownPhone ? "Скрыть телефон" : "Показать телефон"}
-                        <S.ArticleBtnSpan>
-                          {/* 8&nbsp;905&nbsp;ХХХ&nbsp;ХХ&nbsp;ХХ */}
-                          {phone}
-                        </S.ArticleBtnSpan>
+                        <S.ArticleBtnSpan>{phone}</S.ArticleBtnSpan>
                       </S.ArticleBtn>
                     </S.SettingsBlock>
                   </S.SettingsRight>
