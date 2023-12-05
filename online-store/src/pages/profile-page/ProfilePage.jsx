@@ -171,9 +171,13 @@ export const ProfilePage = () => {
                   <S.SettingsLeft>
                     <S.SettingsImage>
                       <S.SettingsImageLink>
-                        <S.SettingsImageImg
-                          src={"http://127.0.0.1:8090/" + user.avatar}
-                        ></S.SettingsImageImg>
+                        {user.avatar ? (
+                          <S.SettingsImageImg
+                            src={"http://127.0.0.1:8090/" + user.avatar}
+                          ></S.SettingsImageImg>
+                        ) : (
+                          ""
+                        )}
                       </S.SettingsImageLink>
                     </S.SettingsImage>
                     <S.PicChangeBlock>
@@ -239,13 +243,14 @@ export const ProfilePage = () => {
                         <S.ItemLabel for="phone">Телефон</S.ItemLabel>
                         <S.ItemPhoneInput
                           name="phone"
-                          type="text"
+                          type="number"
                           placeholder=""
                           value={phone}
                           onChange={(event) => {
                             setPhone(event.target.value);
                           }}
                         ></S.ItemPhoneInput>
+                        <small>Формат: 81234567890</small>
                       </S.SettingsItem>
                       <S.SettingsButton onClick={handleClickEditPassword}>
                         Сменить пароль
@@ -265,11 +270,11 @@ export const ProfilePage = () => {
                   ? userCards.map((card) => (
                       <Link to={`/advs/${card.id}`}>
                         <CardItem
-                          title={card.title}
-                          price={card.price}
-                          place={card.user.city}
-                          date={card.created_on}
-                          img_id={card.images[0]?.url}
+                          title={card?.title}
+                          price={card?.price}
+                          place={card?.user.city}
+                          date={card?.created_on}
+                          img_id={card?.images[0]?.url}
                         />
                       </Link>
                     ))

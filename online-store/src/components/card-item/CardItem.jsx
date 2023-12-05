@@ -19,21 +19,19 @@ export const CardItem = ({ title, price, place, date, img_id }) => {
           <S.CardImageLink>
             <S.CardImageImg
               src={"http://127.0.0.1:8090/" + img_id}
-              adis={Boolean(img_id)}
+              adis={img_id}
             ></S.CardImageImg>
           </S.CardImageLink>
         </S.CardImage>
         <S.CardContent>
           <S.CardLink>
-            <S.CardTitle adis={Boolean(title)}>
+            <S.CardTitle adis={title}>
               {capitalizeFirstLetter(title)}
             </S.CardTitle>
           </S.CardLink>
-          <S.CardPrice adis={Boolean(price)}>{price}&nbsp;₽</S.CardPrice>
-          <S.CardPlace adis={Boolean(place)}>
-            {capitalizeFirstLetter(place)}
-          </S.CardPlace>
-          <S.CardDate adis={Boolean(finalDate)}>
+          <S.CardPrice adis={price}>{price}&nbsp;₽</S.CardPrice>
+          <S.CardPlace adis={place}>{capitalizeFirstLetter(place)}</S.CardPlace>
+          <S.CardDate adis={finalDate}>
             {capitalizeFirstLetter(finalDate)}
           </S.CardDate>
         </S.CardContent>
