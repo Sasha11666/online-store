@@ -57,7 +57,7 @@ export const AdvPage = () => {
     getAd(id).then((data) => {
       setAd(data);
       dispatch(setCurrentAdv(data));
-      setMainImg(data.images[0].url);
+      setMainImg(data?.images[0]?.url);
       getComments(data?.id)
         .then((data) => {
           setComments(data);
@@ -499,7 +499,7 @@ const UpdateAdForm = ({ setOpenUpdateForm, id }) => {
             <S.FormBlock>
               <S.Label htmlFor="price">Цена</S.Label>
               <S.FormInputPrice
-                type="text"
+                type="number"
                 name="price"
                 id="price-input"
                 value={price}

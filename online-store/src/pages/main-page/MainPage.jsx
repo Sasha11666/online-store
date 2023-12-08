@@ -105,11 +105,11 @@ export const MainPage = () => {
                       .map((ad) => (
                         <Link to={`/advs/${ad.id}`}>
                           <CardItem
-                            title={ad.title}
-                            price={ad.price}
-                            place={ad.user.city}
-                            date={ad.created_on}
-                            img_id={ad.images[0]?.url}
+                            title={ad?.title}
+                            price={ad?.price}
+                            place={ad?.user.city}
+                            date={ad?.created_on}
+                            img_id={ad?.images[0]?.url}
                           />
                         </Link>
                       ))

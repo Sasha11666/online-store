@@ -55,7 +55,7 @@ export const CardImageLink = styled.a`
 export const CardImageImg = styled.img`
   width: 100%;
   height: 100%;
-  height: ${(props) => (props.adis ? "100%" : "0%")};
+  height: ${(props) => (Boolean(props.adis) ? "100%" : "0%")};
   display: block;
   -o-object-fit: cover;
   object-fit: cover;
@@ -81,7 +81,7 @@ export const CardLink = styled.a``;
 
 export const CardTitle = styled.h3`
   height: 30px;
-  width: ${(props) => (props.adis ? "" : "200px")};
+  width: ${(props) => (Boolean(props.adis) ? "" : "200px")};
   font-size: 22px;
   font-weight: 500;
   line-height: 26px;
@@ -90,7 +90,7 @@ export const CardTitle = styled.h3`
   margin-top: 20px;
   overflow: hidden;
   text-overflow: ellipsis;
-  background-color: ${(props) => (props.adis ? "" : "#f0f0f0")};
+  background-color: ${(props) => (Boolean(props.adis) ? "" : "#f0f0f0")};
   @media screen and (max-width: 590px) {
     height: 51px;
     font-size: 14px;
@@ -108,7 +108,7 @@ export const CardPrice = styled.p`
   font-weight: 500;
   line-height: 33px;
   margin-bottom: 10px;
-  display: ${(props) => (props.adis ? "block" : "none")};
+  display: ${(props) => (Boolean(props.adis) ? "block" : "none")};
   @media screen and (max-width: 590px) {
     font-size: 16px;
     line-height: 24px;
@@ -119,10 +119,10 @@ export const CardPlace = styled.p`
   font-size: 16px;
   line-height: 21px;
   height: 30px;
-  width: ${(props) => (props.adis ? "" : "135px")};
+  width: ${(props) => (Boolean(props.adis) ? "" : "135px")};
   color: #5f5f5f;
-  margin-bottom: ${(props) => (props.adis ? "4px" : "10px")};
-  background-color: ${(props) => (props.adis ? "" : "#f0f0f0")};
+  margin-bottom: ${(props) => (Boolean(props.adis) ? "4px" : "10px")};
+  background-color: ${(props) => (Boolean(props.adis) ? "" : "#f0f0f0")};
   @media screen and (max-width: 590px) {
     font-size: 12px;
     line-height: 16px;
@@ -133,9 +133,9 @@ export const CardDate = styled.p`
   font-size: 16px;
   line-height: 21px;
   height: 30px;
-  width: ${(props) => (props.adis ? "" : "135px")};
+  width: ${(props) => (Boolean(props.adis) ? "" : "135px")};
   color: #5f5f5f;
-  background-color: ${(props) => (props.adis ? "" : "#f0f0f0")};
+  background-color: ${(props) => (Boolean(props.adis) ? "" : "#f0f0f0")};
   @media screen and (max-width: 590px) {
     font-size: 12px;
     line-height: 16px;

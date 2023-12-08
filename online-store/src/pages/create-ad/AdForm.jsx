@@ -71,7 +71,7 @@ export const AdForm = () => {
               <S.FormBlock>
                 <S.Label htmlFor="price">Цена</S.Label>
                 <S.FormInputPrice
-                  type="text"
+                  type="number"
                   name="price"
                   id="price-input"
                   value={price}
